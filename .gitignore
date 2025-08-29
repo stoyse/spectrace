@@ -133,3 +133,4 @@ dmypy.json
 # Text files (uncomment if needed)
 # *.txt
 images/video-presentation.mp4
+/videos
