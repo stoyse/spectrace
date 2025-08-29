@@ -53,8 +53,8 @@ async def decompile_binary(
         
     Returns:
         DecompileResponse containing:
-        - assembly_code: Disassembled assembly code
-        - decompiled_code: High-level C decompilation
+        - assembly_code: Analysis summary and statistics
+        - decompiled_code: High-level C decompilation (primary output)
         - metadata: Binary analysis metadata
         - success: Whether decompilation succeeded
         - error: Error message if failed

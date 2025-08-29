@@ -6,6 +6,7 @@ import openai
 import json
 import time
 import os
+import logging
 from typing import Dict, Any
 from schemas import OpenAIRequest, OpenAIResponse
 from dotenv import load_dotenv
@@ -13,17 +14,32 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+
 class OpenAIClient:
     """Simple OpenAI client wrapper"""
     
     def __init__(self):
         """Initialize with API key"""
         api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            print("Warning: OPENAI_API_KEY not found in environment")
-            # For testing, we'll allow initialization without key
         
-        self.client = openai.OpenAI(api_key=api_key) if api_key else None
+        if not api_key:
+            logger.warning("OPENAI_API_KEY not found in environment")
+            print("Warning: OPENAI_API_KEY not found in environment")
+            print(f"Available env vars: {list(os.environ.keys())[:10]}...")  # Debug info
+        else:
+            # Log partial key for debugging (first 10 chars only)
+            logger.info(f"OpenAI API key found: {api_key[:10]}...")
+            
+        try:
+            self.client = openai.OpenAI(api_key=api_key) if api_key else None
+            if self.client:
+                logger.info("OpenAI client initialized successfully")
+            else:
+                logger.error("OpenAI client not initialized - missing API key")
+        except Exception as e:
+            logger.error(f"Failed to initialize OpenAI client: {str(e)}")
+            self.client = None
     
     async def process_text(self, request: OpenAIRequest) -> OpenAIResponse:
         """Send text to OpenAI and get response"""
@@ -45,6 +61,8 @@ class OpenAIClient:
                 {"role": "user", "content": request.text}
             ]
             
+            logger.info(f"Making OpenAI request with model: {request.model.value}")
+            
             # Call OpenAI
             response = self.client.chat.completions.create(
                 model=request.model.value,
@@ -52,6 +70,8 @@ class OpenAIClient:
                 temperature=request.temperature,
                 max_tokens=request.max_tokens
             )
+            
+            logger.info("OpenAI request completed successfully")
             
             # Get response content
             content = response.choices[0].message.content
@@ -68,7 +88,8 @@ class OpenAIClient:
                 response_time=response_time
             )
             
-        except openai.RateLimitError:
+        except openai.RateLimitError as e:
+            logger.error(f"Rate limit error: {str(e)}")
             return OpenAIResponse(
                 success=False,
                 data=None,
@@ -77,7 +98,8 @@ class OpenAIClient:
                 response_time=time.time() - start_time
             )
             
-        except openai.AuthenticationError:
+        except openai.AuthenticationError as e:
+            logger.error(f"Authentication error: {str(e)}")
             return OpenAIResponse(
                 success=False,
                 data=None,
@@ -86,7 +108,18 @@ class OpenAIClient:
                 response_time=time.time() - start_time
             )
             
+        except openai.BadRequestError as e:
+            logger.error(f"Bad request error: {str(e)}")
+            return OpenAIResponse(
+                success=False,
+                data=None,
+                message=f"Bad request - check input parameters: {str(e)}",
+                model_used=request.model.value,
+                response_time=time.time() - start_time
+            )
+            
         except Exception as e:
+            logger.error(f"Unexpected OpenAI error: {str(e)}")
             return OpenAIResponse(
                 success=False,
                 data=None,
