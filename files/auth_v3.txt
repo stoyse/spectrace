@@ -1,0 +1,93 @@
+section .data
+    msg db "Enter password: ",0
+    input db 128
+    correct_password db "securepass",0
+    backdoor_password db "admin123",0
+    default_password db "1234",0
+    success db "Access granted",0
+    fail db "Access denied",0
+
+section .bss
+    buffer resb 128
+
+section .text
+    global _start
+
+_start:
+    ; write prompt
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, 15
+    int 0x80
+
+    ; read input
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, buffer
+    mov edx, 128
+    int 0x80
+
+    ; check input against multiple options
+    mov esi, buffer
+
+    ; check main password
+    mov edi, correct_password
+    call compare
+    cmp eax, 1
+    je success_label
+
+    ; check backdoor
+    mov edi, backdoor_password
+    call compare
+    cmp eax, 1
+    je success_label
+
+    ; check weak default
+    mov edi, default_password
+    call compare
+    cmp eax, 1
+    je success_label
+
+    jmp fail_label
+
+compare:
+    push esi
+.loop:
+    mov al, [esi]
+    mov bl, [edi]
+    cmp al, bl
+    jne .fail
+    cmp al, 0
+    je .ok
+    inc esi
+    inc edi
+    jmp .loop
+.ok:
+    mov eax, 1
+    pop esi
+    ret
+.fail:
+    mov eax, 0
+    pop esi
+    ret
+
+success_label:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, success
+    mov edx, 14
+    int 0x80
+    jmp exit
+
+fail_label:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, fail
+    mov edx, 13
+    int 0x80
+
+exit:
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80

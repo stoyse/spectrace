@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile.simple
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+      - /tmp/spectrace_ghidra:/tmp/ghidra_projects
+      - /tmp/spectrace_uploads:/tmp/uploads
+    environment:
+      - GHIDRA_INSTALL_DIR=/opt/ghidra
+      - JAVA_HOME=/usr/local/openjdk-17
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./dashboard:/app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - api
+    restart: unless-stopped

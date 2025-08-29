@@ -1,0 +1,61 @@
+section .data
+    msg db "Enter password: ",0
+    input db 32
+    correct_password db "securepass",0
+    success db "Access granted",0
+    fail db "Access denied",0
+
+section .bss
+    buffer resb 32
+
+section .text
+    global _start
+
+_start:
+    ; write prompt
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, 15
+    int 0x80
+
+    ; read input
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, buffer
+    mov edx, 32
+    int 0x80
+
+    ; compare input with correct_password
+    mov esi, buffer
+    mov edi, correct_password
+compare_loop:
+    mov al, [esi]
+    mov bl, [edi]
+    cmp al, bl
+    jne wrong
+    cmp al, 0
+    je correct
+    inc esi
+    inc edi
+    jmp compare_loop
+
+correct:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, success
+    mov edx, 14
+    int 0x80
+    jmp exit
+
+wrong:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, fail
+    mov edx, 13
+    int 0x80
+
+exit:
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
