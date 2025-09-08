@@ -1,3 +1,45 @@
+# SpecTrace - state of this repo / hackathon result  
+
+The repo “spectrace” ( https://github.com/stoyse/spectrace/ ) was created during an AI security hackathon as a team repo. This text change commit corrects and clarifies some things and will most likely be the last one before the project is archived.
+
+The idea and workflow for the project was drafted by Richard Meinsen and presented to Joseph Chris Adrian before the hackathon. As a data scientist he decided to stay in the team but to work with synthetic data on another aspect as the concept did not offer data for machine learning. 
+
+During the hackathon the concept was presented to Julian Stosse and Javier Peres. Julian Stosse and Richard Meinsen then verified the concept by manual workflow execution and manually writing the prompts. They successfully proved that the concept can work, and shared all the results in the team. 
+The concept can be helpful to support software / firmware development. The approach would be most useful & usable when implemented as cli or via scripts -> usable in CI/CD.
+
+Without discussion with the team Javier Peres decided to make it a web app and vibe coded that web app on the evening of day 1 based on the explanations and information he had received from the team.
+On day 2 the team was in the situation that Javier had put the source not in the agreed upon team repo but in his own repo where the team had no access, also without mentioning the team members in the files.
+Richard made clear that mentioning the team members was necessary, as well as using the team repo that all the team had access to.
+Besides other problems Javier Peres repeatedly force pushed on the team repo, effectively removing the work from the repo that others had pushed.
+For other hackathon team members the resulting experience is totally bitter.
+
+It is useless to continue with this repo as the vibe coded web app looks shiny but does not work correctly (bad for presenting) while the basic workflow worked fine. Further the workflow should not be implemented as a web app with point and click file uploads as this does not align with professional software development workflows and CI/CD.
+
+Further the claim "SpecTrace is an AI-powered firmware security analysis platform that decompiles binary firmware files using Ghidra and performs intelligent code comparison to identify security vulnerabilities, compliance issues, and behavioral changes between firmware versions. The application combines automated binary analysis with OpenAI GPT-4 to provide detailed" is quite exaggerated as a) the so far pushed state of code does not work correctly what made it also not presentable working (but what would have worked as tested for the validation) and b) the web workflow is not really usable for firmware development or in general software development.
+
+One can take the work of others, wrap it cheap and shiny, and promote oneself with that as an inventive creator. That's not new. But in the end it just wastes time and resources.
+
+Making this state clear in this public repo is the only way to make sure there is also not much profit for Javier Peres from this. It will not make the time losses and the ruined hackathon for the other team members any better. The hope is, that some others will notice that such an egoistic approach can cause problems and will refrain from it.
+
+See also
+- https://github.com/peres84/specTrace
+- https://github.com/hackathon-develop/spectrace-rescuefork-after-repeated-deletions-of-team-work-through-force-push
+
+
+
+
+
+
+
+
+
+# --------------------------------------------------------------------------------------
+
+
+
+
+
+
 # 🛡️ SpecTrace
 
 > **AI-Powered Firmware Security Analysis Platform with Binary Decompilation**
