@@ -438,7 +438,9 @@ DEBUG=true                        # Enable debug logging
 
 ## 📝 **License**
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+
+This project is licensed under the **GPL v3** - see https://www.gnu.org/licenses/gpl-3.0.en.html and [LICENSE](LICENSE) file for details.
 
 **Copyright © 2025 SpecTrace Team Hackathon**
 
